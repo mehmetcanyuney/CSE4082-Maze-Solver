@@ -1,9 +1,12 @@
 class Node:
-    def __init__(self, x, y, parent, cost=1):
-        self.x      = x
-        self.y      = y
-        self.parent = parent
-        self.cost   = cost
+    def __init__(self, x, y, parent, cost=0, heuristic=0):
+        self.x         = x
+        self.y         = y
+        self.parent    = parent
+        self.cost      = cost
+        self.heuristic = heuristic
+
+        self.a_star_heuristic = self.cost + self.heuristic
 
     def get_real_coordinates(self):
         return int((self.x + 1) / 2), int((self.y + 1) / 2)

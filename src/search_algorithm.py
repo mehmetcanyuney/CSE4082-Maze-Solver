@@ -10,13 +10,23 @@ class SearchAlgorithm:
 
         self.maze = maze.maze_matrix
 
+        self.goals = maze.maze_goals
+
         # init frontier with current node
         self.frontier = [maze.start]
-        self.expanded = [(maze.start.get_real_coordinates())]
+        # self.expanded = [(maze.start.get_real_coordinates())]
+        self.expanded = []
 
     # going to change depending on the algorithm
     def search(self):
         pass
+
+    # calculates the minimum manhattan distance between goals for given node
+    def get_manhattan_distance(self, x, y):
+        heuristic_results = []
+        for n in self.goals:
+            heuristic_results.append(abs(x - n.x) + abs(y - n.y))
+        return max(heuristic_results)
 
     def check_valid(self, node):
         if self.maze[node.x][node.y] == '#':
@@ -41,13 +51,13 @@ class SearchAlgorithm:
         north = Node(x-1, y, None)
 
         if self.check_valid(east):
-            explore_list.append(Node(x, y+2, node, node.cost + self.get_cost(x, y+2)))
+            explore_list.append(Node(x, y+2, node, node.cost + self.get_cost(x, y+2), self.get_manhattan_distance(x, y+2)))
         if self.check_valid(south):
-            explore_list.append(Node(x+2, y, node, node.cost + self.get_cost(x+2, y)))
+            explore_list.append(Node(x+2, y, node, node.cost + self.get_cost(x+2, y), self.get_manhattan_distance(x+2, y)))
         if self.check_valid(west):
-            explore_list.append(Node(x, y-2, node, node.cost + self.get_cost(x, y-2)))
+            explore_list.append(Node(x, y-2, node, node.cost + self.get_cost(x, y-2), self.get_manhattan_distance(x, y-2)))
         if self.check_valid(north):
-            explore_list.append(Node(x-2, y, node, node.cost + self.get_cost(x-2, y)))
+            explore_list.append(Node(x-2, y, node, node.cost + self.get_cost(x-2, y), self.get_manhattan_distance(x-2, y)))
 
         return explore_list
 

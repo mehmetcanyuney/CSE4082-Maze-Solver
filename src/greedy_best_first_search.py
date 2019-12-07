@@ -1,10 +1,10 @@
 from search_algorithm import SearchAlgorithm
 from maze import Maze
 
-class DepthFirstSearch(SearchAlgorithm):
+class GreedyBestFirstSearch(SearchAlgorithm):
     def search(self):
         while self.frontier is not []:
-            current_node = self.frontier.pop()
+            current_node = self.frontier.pop(self.frontier.index(min(self.frontier, key = lambda x:x.heuristic)))
 
             # real_x, real_y = current_node.get_real_coordinates()
             # print("Popped : " + str(real_x) + " - " + str(real_y))
@@ -20,14 +20,14 @@ class DepthFirstSearch(SearchAlgorithm):
 
             explore_result = self.explore(current_node)
 
-            for node in reversed(explore_result):
+            for node in explore_result:
                 if node not in self.frontier and node not in self.explored:
                     self.frontier.append(node)
 
 
 if __name__ == '__main__':
     maze = Maze("..\\maze\\maze.txt")
-    a = DepthFirstSearch(maze=maze)
+    a = GreedyBestFirstSearch(maze=maze)
     a.search()
     print("Solution Path:")
     for i ,n in enumerate(a.solution_path):
