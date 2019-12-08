@@ -1,21 +1,23 @@
 from node import Node
 
 class SearchAlgorithm:
-    def __init__(self, maze):
+    def __init__(self, app):
         self.solution_path = []
         self.explored = []
         self.solution_cost = 0
 
         self.end_node = None
 
-        self.maze = maze.maze_matrix
+        self.maze = app.maze.maze_matrix
 
-        self.goals = maze.maze_goals
+        self.goals = app.maze.maze_goals
 
         # init frontier with current node
-        self.frontier = [maze.start]
+        self.frontier = [app.maze.start]
         # self.expanded = [(maze.start.get_real_coordinates())]
         self.expanded = []
+
+        self.app = app
 
     # going to change depending on the algorithm
     def search(self):
