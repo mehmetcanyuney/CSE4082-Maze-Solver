@@ -1,14 +1,16 @@
 from search_algorithm import SearchAlgorithm
 from maze import Maze
+import time
+
 
 class BreadthFirstSearch(SearchAlgorithm):
     def search(self):
         while self.frontier is not []:
             current_node = self.frontier.pop(0)
 
-            # real_x, real_y = current_node.get_real_coordinates()
-            # print("Popped : " + str(real_x) + " - " + str(real_y))
-            # input()
+            self.app.update_maze(current_node)
+            self.app.root.update()
+            time.sleep(0.5)
 
             self.explored.append(current_node)
             self.expanded.append((current_node.get_real_coordinates()))

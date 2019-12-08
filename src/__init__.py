@@ -24,6 +24,7 @@ class App:
 
         self.rectangles = None
         self.prev = None
+        self.prev_node = None
 
         windowWidth = 600
         windowHeight = 450
@@ -48,11 +49,11 @@ class App:
         rightFrame_title_label = Label(rightFrame, text="Options", justify=CENTER, font="Times 32")
         self.select_maze = Button(rightFrame, text="Select Maze", width=20, command=self.maze_selection)
         self.dfs_button = Button(rightFrame, text="Depth First Search", width=20, command=self.apply_dfs)
-        self.bfs_button = Button(rightFrame, text="Breadth First Search", width=20)
-        self.greedy_button = Button(rightFrame, text="Greedy Best First Search", width=20)
+        self.bfs_button = Button(rightFrame, text="Breadth First Search", width=20, command=self.apply_bfs)
+        self.greedy_button = Button(rightFrame, text="Greedy Best First Search", width=20, command=self.apply_gbfs)
         self.uniform_button = Button(rightFrame, text="Uniform Cost Search", width=20)
         self.iterative_button = Button(rightFrame, text="Iterative Deepining Search", width=20)
-        self.a_star_button = Button(rightFrame, text="A* Heuristic Search", width=20)
+        self.a_star_button = Button(rightFrame, text="A* Heuristic Search", width=20, command=self.apply_astar)
         self.reset_button = Button(rightFrame, text="Reset", width=20, command=self.reset)
 
         rightFrame_title_label.grid(row=0, column=0, pady=(10,0), padx=(0,100))
@@ -123,13 +124,15 @@ class App:
     def update_maze(self, node):
         row, column = node.get_real_coordinates()
 
-        self.canvas.itemconfig(self.rectangles[row - 1][column - 1], fill="blue")
-
         if self.prev != None:
             self.canvas.itemconfig(self.rectangles[self.prev[0] - 1][self.prev[1] - 1], fill="yellow")
             self.prev = (row, column)
+            self.prev_node = node
         else:
             self.prev = (row, column)
+            self.prev_node = node
+
+        self.canvas.itemconfig(self.rectangles[row - 1][column - 1], fill="blue")
 
     def apply_dfs(self):
         self.disable_buttons()
@@ -153,11 +156,78 @@ class App:
             else:
                 print(n, end=' -> ')
 
+    def apply_bfs(self):
+        self.disable_buttons()
+
+        bfs = BreadthFirstSearch(app=self)
+
+        bfs.search()
+
+        print("Solution Path:")
+        for i ,n in enumerate(bfs.solution_path):
+            if i == len(bfs.solution_path) - 1:
+                print(n, end='\n\n')
+            else:
+                print(n, end=' -> ')
+
+        print("Solution Cost: " + str(bfs.solution_cost), end='\n\n')
+        print("Expended Nodes:")
+        for i ,n in enumerate(bfs.expanded):
+            if i == len(bfs.expanded) - 1:
+                print(n)
+            else:
+                print(n, end=' -> ')
+
+    def apply_gbfs(self):
+        self.disable_buttons()
+
+        gbfs = GreedyBestFirstSearch(app=self)
+
+        gbfs.search()
+
+        print("Solution Path:")
+        for i ,n in enumerate(gbfs.solution_path):
+            if i == len(gbfs.solution_path) - 1:
+                print(n, end='\n\n')
+            else:
+                print(n, end=' -> ')
+
+        print("Solution Cost: " + str(gbfs.solution_cost), end='\n\n')
+        print("Expended Nodes:")
+        for i ,n in enumerate(gbfs.expanded):
+            if i == len(gbfs.expanded) - 1:
+                print(n)
+            else:
+                print(n, end=' -> ')
+
+    def apply_astar(self):
+        self.disable_buttons()
+
+        astar = AStarSearch(app=self)
+
+        astar.search()
+
+        print("Solution Path:")
+        for i ,n in enumerate(astar.solution_path):
+            if i == len(astar.solution_path) - 1:
+                print(n, end='\n\n')
+            else:
+                print(n, end=' -> ')
+
+        print("Solution Cost: " + str(astar.solution_cost), end='\n\n')
+        print("Expended Nodes:")
+        for i ,n in enumerate(astar.expanded):
+            if i == len(astar.expanded) - 1:
+                print(n)
+            else:
+                print(n, end=' -> ')
+
     def reset(self):
         self.enable_buttons()
 
         self.rectangles = [[] for _ in range(int((len(self.maze.maze_matrix) - 1) / 2))]
         self.prev = None
+        self.prev_node = None
         self.fill_canvas()
 
     def disable_buttons(self):
@@ -168,6 +238,8 @@ class App:
         self.iterative_button.configure(state=DISABLED)
         self.a_star_button.configure(state=DISABLED)
 
+        self.reset_button.configure(state=NORMAL)
+
     def enable_buttons(self):
         self.dfs_button.configure(state=NORMAL)
         self.bfs_button.configure(state=NORMAL)
@@ -175,6 +247,8 @@ class App:
         self.uniform_button.configure(state=NORMAL)
         self.iterative_button.configure(state=NORMAL)
         self.a_star_button.configure(state=NORMAL)
+
+        self.reset_button.configure(state=DISABLED)
 
 
 if __name__ == '__main__':

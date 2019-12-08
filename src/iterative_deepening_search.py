@@ -1,5 +1,7 @@
 from search_algorithm import SearchAlgorithm
 from maze import Maze
+import time
+
 
 class IterativeDeepeningSearch(SearchAlgorithm):
     def search(self):
