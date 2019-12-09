@@ -8,7 +8,7 @@ class DepthFirstSearch(SearchAlgorithm):
         while self.frontier is not []:
             current_node = self.frontier.pop()
 
-            self.app.update_maze(current_node)
+            self.app.update_maze_dfs_special(current_node)
             self.app.root.update()
             time.sleep(0.5)
 

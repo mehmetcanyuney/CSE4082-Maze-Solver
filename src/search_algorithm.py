@@ -25,10 +25,13 @@ class SearchAlgorithm:
 
     # calculates the minimum manhattan distance between goals for given node
     def get_manhattan_distance(self, x, y):
+        x = int((x + 1) / 2)
+        y = int((y + 1) / 2)
         heuristic_results = []
         for n in self.goals:
-            heuristic_results.append(abs(x - n.x) + abs(y - n.y))
-        return max(heuristic_results)
+            n_x, n_y = n.get_real_coordinates()
+            heuristic_results.append(abs(x - n_x) + abs(y - n_y))
+        return min(heuristic_results)
 
     def check_valid(self, node):
         if self.maze[node.x][node.y] == '#':

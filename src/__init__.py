@@ -3,6 +3,7 @@ from tkinter.filedialog import askopenfilename
 from maze import Maze
 from node import Node
 from os.path import join
+import time
 
 # Algorithms
 from depth_first_search import DepthFirstSearch
@@ -131,12 +132,40 @@ class App:
         if self.prev != None:
             self.canvas.itemconfig(self.rectangles[self.prev[0] - 1][self.prev[1] - 1], fill="yellow")
             self.prev = (row, column)
-            self.prev_node = node
         else:
             self.prev = (row, column)
+
+        self.canvas.itemconfig(self.rectangles[row - 1][column - 1], fill="blue")
+
+    def update_maze_dfs_special(self, node):
+        row, column = node.get_real_coordinates()
+
+        if self.prev_node != None:
+            if self.prev_node != node.parent:
+                temp_prev = self.prev_node
+                while node.parent != temp_prev:
+                    i, j = temp_prev.get_real_coordinates()
+                    self.canvas.itemconfig(self.rectangles[i - 1][j - 1], fill="yellow")
+                    i, j = temp_prev.parent.get_real_coordinates()
+                    self.canvas.itemconfig(self.rectangles[i - 1][j - 1], fill="blue")
+                    self.root.update()
+                    temp_prev = temp_prev.parent
+                    time.sleep(0.5)
+                i, j = node.parent.get_real_coordinates()
+                self.canvas.itemconfig(self.rectangles[i - 1][j - 1], fill="yellow")
+                self.prev_node = node
+                self.root.update()
+            else:
+                i, j = self.prev_node.get_real_coordinates()
+                self.canvas.itemconfig(self.rectangles[i - 1][j - 1], fill="yellow")
+                self.prev_node = node
+                self.root.update()
+        else:
             self.prev_node = node
 
         self.canvas.itemconfig(self.rectangles[row - 1][column - 1], fill="blue")
+        self.root.update()
+
 
     def apply_dfs(self):
         self.disable_buttons()
@@ -178,6 +207,8 @@ class App:
             else:
                 print(n, end=' -> ')
 
+        self.update_solution_on_canvas(bfs.solution_path)
+
         print("Solution Cost: " + str(bfs.solution_cost), end='\n\n')
         print("Expended Nodes:")
         for i ,n in enumerate(bfs.expanded):
@@ -201,6 +232,8 @@ class App:
                 print(n, end='\n\n')
             else:
                 print(n, end=' -> ')
+
+        self.update_solution_on_canvas(gbfs.solution_path)
 
         print("Solution Cost: " + str(gbfs.solution_cost), end='\n\n')
         print("Expended Nodes:")
@@ -226,6 +259,8 @@ class App:
             else:
                 print(n, end=' -> ')
 
+        self.update_solution_on_canvas(astar.solution_path)
+
         print("Solution Cost: " + str(astar.solution_cost), end='\n\n')
         print("Expended Nodes:")
         for i ,n in enumerate(astar.expanded):
@@ -249,6 +284,8 @@ class App:
                 print(n, end='\n\n')
             else:
                 print(n, end=' -> ')
+
+        self.update_solution_on_canvas(uniform.solution_path)
 
         print("Solution Cost: " + str(uniform.solution_cost), end='\n\n')
         print("Expended Nodes:")

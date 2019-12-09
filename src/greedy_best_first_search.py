@@ -10,8 +10,8 @@ class GreedyBestFirstSearch(SearchAlgorithm):
 
             self.app.update_maze(current_node)
             self.app.root.update()
-            # time.sleep(0.5)
-            input()
+            time.sleep(0.5)
+            # input()
 
             self.explored.append(current_node)
             self.expanded.append((current_node.get_real_coordinates()))
