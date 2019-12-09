@@ -27,6 +27,8 @@ class App:
         self.prev = None
         self.prev_node = None
 
+        self.animation_speed = 0.2
+
         windowWidth = 600
         windowHeight = 450
         positionRight = int(root.winfo_screenwidth()/2 - windowWidth/2)
@@ -41,19 +43,19 @@ class App:
         leftFrame_title = Frame(leftFrame)
         leftFrame_title.pack(side=TOP)
 
-        leftFrame_title_label = Label(leftFrame_title, text="Maze", justify=CENTER, font="Times 32")
+        leftFrame_title_label = Label(leftFrame_title, text="Maze", justify=CENTER, font="Times 32 italic bold")
         leftFrame_title_label.pack(pady=(10,0))
 
         self.canvas = Canvas(leftFrame_title, width=400, height=400)
         self.canvas.pack()
 
-        rightFrame_title_label = Label(rightFrame, text="Options", justify=CENTER, font="Times 32")
+        rightFrame_title_label = Label(rightFrame, text="Options", justify=CENTER, font="Times 32 italic bold")
         self.select_maze = Button(rightFrame, text="Select Maze", width=20, command=self.maze_selection)
         self.dfs_button = Button(rightFrame, text="Depth First Search", width=20, command=self.apply_dfs)
         self.bfs_button = Button(rightFrame, text="Breadth First Search", width=20, command=self.apply_bfs)
         self.greedy_button = Button(rightFrame, text="Greedy Best First Search", width=20, command=self.apply_gbfs)
         self.uniform_button = Button(rightFrame, text="Uniform Cost Search", width=20, command=self.apply_uniform)
-        self.iterative_button = Button(rightFrame, text="Iterative Deepining Search", width=20)
+        self.iterative_button = Button(rightFrame, text="Iterative Deepining Search", width=20, command=self.apply_ids)
         self.a_star_button = Button(rightFrame, text="A* Heuristic Search", width=20, command=self.apply_astar)
         self.reset_button = Button(rightFrame, text="Reset", width=20, command=self.reset)
 
@@ -74,7 +76,6 @@ class App:
 
         if maze_file == "":
             raise ValueError("You have to choose a maze txt file in order to continue...")
-            exit()
 
         self.maze = Maze(maze_file)
 
@@ -150,7 +151,7 @@ class App:
                     self.canvas.itemconfig(self.rectangles[i - 1][j - 1], fill="blue")
                     self.root.update()
                     temp_prev = temp_prev.parent
-                    time.sleep(0.5)
+                    time.sleep(self.animation_speed)
                 i, j = node.parent.get_real_coordinates()
                 self.canvas.itemconfig(self.rectangles[i - 1][j - 1], fill="yellow")
                 self.prev_node = node
@@ -291,6 +292,32 @@ class App:
         print("Expended Nodes:")
         for i ,n in enumerate(uniform.expanded):
             if i == len(uniform.expanded) - 1:
+                print(n)
+            else:
+                print(n, end=' -> ')
+
+        self.reset_button.configure(state=NORMAL)
+
+    def apply_ids(self):
+        self.disable_buttons()
+
+        ids = IterativeDeepeningSearch(app=self)
+
+        ids.search()
+
+        print("Solution Path:")
+        for i ,n in enumerate(ids.solution_path):
+            if i == len(ids.solution_path) - 1:
+                print(n, end='\n\n')
+            else:
+                print(n, end=' -> ')
+
+        self.update_solution_on_canvas(ids.solution_path)
+
+        print("Solution Cost: " + str(ids.solution_cost), end='\n\n')
+        print("Expended Nodes:")
+        for i ,n in enumerate(ids.expanded):
+            if i == len(ids.expanded) - 1:
                 print(n)
             else:
                 print(n, end=' -> ')

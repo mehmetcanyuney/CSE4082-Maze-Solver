@@ -25,6 +25,10 @@ class IterativeDeepeningSearch(SearchAlgorithm):
         return self.recursive_dls(start_node, limit)
 
     def recursive_dls(self, node, limit):
+        self.app.update_maze(node)
+        self.app.root.update()
+        time.sleep(self.app.animation_speed / 24)
+
         if self.maze[node.x][node.y] == 'G':
             return node
         elif limit == 0:
@@ -47,23 +51,3 @@ class IterativeDeepeningSearch(SearchAlgorithm):
                 return "cutoff"
             else:
                 return "failure"
-
-
-if __name__ == '__main__':
-    maze = Maze("..\\maze\\maze.txt")
-    a = IterativeDeepeningSearch(maze=maze)
-    if a.search() == 'success':
-        print("Solution Path:")
-        for i, n in enumerate(a.solution_path):
-            if i == len(a.solution_path) - 1:
-                print(n, end='\n\n')
-            else:
-                print(n, end=' -> ')
-
-        print("Solution Cost: " + str(a.solution_cost), end='\n\n')
-        print("Expended Nodes:")
-        for i ,n in enumerate(a.expanded):
-            if i == len(a.expanded) - 1:
-                print(n)
-            else:
-                print(n, end=' -> ')

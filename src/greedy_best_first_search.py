@@ -10,8 +10,7 @@ class GreedyBestFirstSearch(SearchAlgorithm):
 
             self.app.update_maze(current_node)
             self.app.root.update()
-            time.sleep(0.5)
-            # input()
+            time.sleep(self.app.animation_speed)
 
             self.explored.append(current_node)
             self.expanded.append((current_node.get_real_coordinates()))
@@ -26,23 +25,3 @@ class GreedyBestFirstSearch(SearchAlgorithm):
             for node in explore_result:
                 if node not in self.frontier and node not in self.explored:
                     self.frontier.append(node)
-
-
-if __name__ == '__main__':
-    maze = Maze("..\\maze\\maze.txt")
-    a = GreedyBestFirstSearch(maze=maze)
-    a.search()
-    print("Solution Path:")
-    for i ,n in enumerate(a.solution_path):
-        if i == len(a.solution_path) - 1:
-            print(n, end='\n\n')
-        else:
-            print(n, end=' -> ')
-
-    print("Solution Cost: " + str(a.solution_cost), end='\n\n')
-    print("Expended Nodes:")
-    for i ,n in enumerate(a.expanded):
-        if i == len(a.expanded) - 1:
-            print(n)
-        else:
-            print(n, end=' -> ')
