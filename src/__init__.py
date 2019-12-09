@@ -51,7 +51,7 @@ class App:
         self.dfs_button = Button(rightFrame, text="Depth First Search", width=20, command=self.apply_dfs)
         self.bfs_button = Button(rightFrame, text="Breadth First Search", width=20, command=self.apply_bfs)
         self.greedy_button = Button(rightFrame, text="Greedy Best First Search", width=20, command=self.apply_gbfs)
-        self.uniform_button = Button(rightFrame, text="Uniform Cost Search", width=20)
+        self.uniform_button = Button(rightFrame, text="Uniform Cost Search", width=20, command=self.apply_uniform)
         self.iterative_button = Button(rightFrame, text="Iterative Deepining Search", width=20)
         self.a_star_button = Button(rightFrame, text="A* Heuristic Search", width=20, command=self.apply_astar)
         self.reset_button = Button(rightFrame, text="Reset", width=20, command=self.reset)
@@ -66,11 +66,14 @@ class App:
         self.a_star_button.grid(row = 7, column = 0, pady=(20,0), padx=(0,100))
         self.reset_button.grid(row = 8, column = 0, pady=(20,0), padx=(0,100))
 
+        self.disable_buttons()
+
     def maze_selection(self):
         maze_file = askopenfilename()
 
         if maze_file == "":
             raise ValueError("You have to choose a maze txt file in order to continue...")
+            exit()
 
         self.maze = Maze(maze_file)
 
@@ -79,6 +82,7 @@ class App:
         self.rectangles = [[] for _ in range(int((len(self.maze.maze_matrix) - 1) / 2))]
 
         self.fill_canvas()
+        self.enable_buttons()
 
     def fill_canvas(self):
         row, column = len(self.maze.maze_matrix), len(self.maze.maze_matrix[0])
@@ -148,6 +152,8 @@ class App:
             else:
                 print(n, end=' -> ')
 
+        self.update_solution_on_canvas(dfs.solution_path)
+
         print("Solution Cost: " + str(dfs.solution_cost), end='\n\n')
         print("Expended Nodes:")
         for i ,n in enumerate(dfs.expanded):
@@ -155,6 +161,8 @@ class App:
                 print(n)
             else:
                 print(n, end=' -> ')
+
+        self.reset_button.configure(state=NORMAL)
 
     def apply_bfs(self):
         self.disable_buttons()
@@ -178,6 +186,8 @@ class App:
             else:
                 print(n, end=' -> ')
 
+        self.reset_button.configure(state=NORMAL)
+
     def apply_gbfs(self):
         self.disable_buttons()
 
@@ -199,6 +209,8 @@ class App:
                 print(n)
             else:
                 print(n, end=' -> ')
+
+        self.reset_button.configure(state=NORMAL)
 
     def apply_astar(self):
         self.disable_buttons()
@@ -222,6 +234,32 @@ class App:
             else:
                 print(n, end=' -> ')
 
+        self.reset_button.configure(state=NORMAL)
+
+    def apply_uniform(self):
+        self.disable_buttons()
+
+        uniform = UniformCostSearch(app=self)
+
+        uniform.search()
+
+        print("Solution Path:")
+        for i ,n in enumerate(uniform.solution_path):
+            if i == len(uniform.solution_path) - 1:
+                print(n, end='\n\n')
+            else:
+                print(n, end=' -> ')
+
+        print("Solution Cost: " + str(uniform.solution_cost), end='\n\n')
+        print("Expended Nodes:")
+        for i ,n in enumerate(uniform.expanded):
+            if i == len(uniform.expanded) - 1:
+                print(n)
+            else:
+                print(n, end=' -> ')
+
+        self.reset_button.configure(state=NORMAL)
+
     def reset(self):
         self.enable_buttons()
 
@@ -237,8 +275,7 @@ class App:
         self.uniform_button.configure(state=DISABLED)
         self.iterative_button.configure(state=DISABLED)
         self.a_star_button.configure(state=DISABLED)
-
-        self.reset_button.configure(state=NORMAL)
+        self.reset_button.configure(state=DISABLED)
 
     def enable_buttons(self):
         self.dfs_button.configure(state=NORMAL)
@@ -249,6 +286,11 @@ class App:
         self.a_star_button.configure(state=NORMAL)
 
         self.reset_button.configure(state=DISABLED)
+
+    def update_solution_on_canvas(self, solution_path):
+        for i, j in solution_path:
+            self.canvas.itemconfig(self.rectangles[i - 1][j - 1], fill="DeepSkyBlue3")
+        self.root.update()
 
 
 if __name__ == '__main__':
