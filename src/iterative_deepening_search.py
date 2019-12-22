@@ -5,14 +5,16 @@ import time
 
 class IterativeDeepeningSearch(SearchAlgorithm):
     def search(self):
+        # Popping the only node which is starting node from frontier
         start_node = self.frontier.pop()
-        self.expanded.append((start_node.get_real_coordinates()))
 
+        # calculating maximum number of movement and assign this number as max_depth
         max_depth = len(self.maze) * len(self.maze[0])
 
+        # calling the Depth Limited Search with depth limit (from 0 to max_depth)
         for depth in range(max_depth):
             result = self.depthlimitedsearch(start_node, depth)
-
+            # if DLS cannot find the goal node or stuck at depth limit
             if isinstance(result, str):
                 pass
             else:
@@ -21,33 +23,33 @@ class IterativeDeepeningSearch(SearchAlgorithm):
                 return "success"
         return "failure"
 
-    def depthlimitedsearch(self, start_node, limit):
-        return self.recursive_dls(start_node, limit)
-
-    def recursive_dls(self, node, limit):
+    def depthlimitedsearch(self, node, limit):
+        # adding the current node to expanded list
+        self.expanded.append((node.get_real_coordinates()))
         self.app.update_maze(node)
         self.app.root.update()
-        time.sleep(self.app.animation_speed / 24)
+        # visiting a lot of nodes so animation speed increased
+        time.sleep(self.app.animation_speed / 16)
 
+        # exit if the algorithm finds the goal node
         if self.maze[node.x][node.y] == 'G':
             return node
+        # stuck at depth limit
         elif limit == 0:
             return "cutoff"
         else:
-            cutoff_occurred = False
-
+            # explore available nodes
             explore_result = self.explore(node)
 
+            # check every neighboor
             for child_node in explore_result:
-                if child_node.get_real_coordinates() not in self.expanded:
-                    self.expanded.append((child_node.get_real_coordinates()))
-                result = self.recursive_dls(child_node, limit - 1)
+                # passing the neighboor if the neigboor / child is the parent node's itself.
+                if child_node == node.parent:
+                    continue
+                # recursive call of DLS
+                result = self.depthlimitedsearch(child_node, limit - 1)
                 if isinstance(result, str):
-                    if result == "cutoff":
-                        cutoff_occurred = True
+                    pass
                 else:
                     return result
-            if cutoff_occurred:
-                return "cutoff"
-            else:
-                return "failure"
+            return "cutoff"

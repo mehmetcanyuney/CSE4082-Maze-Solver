@@ -71,6 +71,7 @@ class App:
 
         self.disable_buttons()
 
+    # maze selection function in order to get txt file from user
     def maze_selection(self):
         maze_file = askopenfilename()
 
@@ -86,6 +87,7 @@ class App:
         self.fill_canvas()
         self.enable_buttons()
 
+    # fill the canvas that contains the maze
     def fill_canvas(self):
         row, column = len(self.maze.maze_matrix), len(self.maze.maze_matrix[0])
         matrix = self.maze.maze_matrix
@@ -98,18 +100,13 @@ class App:
 
                 self.rectangles[real_i - 1].append(self.canvas.create_rectangle((real_j*block_size), (real_i*block_size), (real_j*block_size + block_size), (real_i*block_size + block_size), fill="white"))
 
-                # if matrix[i][j + 1] == " " and matrix[i+1][j] == " ":
-
                 if matrix[i][j + 1] == "#" and matrix[i+1][j] == " ":
-                    #self.canvas.create_rectangle((real_j*block_size), (real_i*block_size), (real_j*block_size + block_size), (real_i*block_size + block_size), fill="white")
                     if j is not (column - 2):
                         self.canvas.create_line((real_j*block_size + block_size), (real_i*block_size), (real_j*block_size + block_size), (real_i*block_size + block_size), width=8)
                 if matrix[i][j + 1] == " " and matrix[i+1][j] == "#":
-                    #self.canvas.create_rectangle((real_j*block_size), (real_i*block_size), (real_j*block_size + block_size), (real_i*block_size + block_size), fill="white")
                     if i is not (row - 2):
                         self.canvas.create_line((real_j*block_size), (real_i*block_size + block_size), (real_j*block_size + block_size), (real_i*block_size + block_size), width=8)
                 if matrix[i][j + 1] == "#" and matrix[i+1][j] == "#":
-                    #self.canvas.create_rectangle((real_j*block_size), (real_i*block_size), (real_j*block_size + block_size), (real_i*block_size + block_size), fill="white")
                     if j is not (column - 2):
                         self.canvas.create_line((real_j*block_size + block_size), (real_i*block_size), (real_j*block_size + block_size), (real_i*block_size + block_size), width=8)
                     if i is not (row - 2):
@@ -138,6 +135,8 @@ class App:
 
         self.canvas.itemconfig(self.rectangles[row - 1][column - 1], fill="blue")
 
+    # update maze with colors
+    # special case for dfs because it requires to go back when it has no where to go/
     def update_maze_dfs_special(self, node):
         row, column = node.get_real_coordinates()
 
@@ -166,7 +165,6 @@ class App:
 
         self.canvas.itemconfig(self.rectangles[row - 1][column - 1], fill="blue")
         self.root.update()
-
 
     def apply_dfs(self):
         self.disable_buttons()

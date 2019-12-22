@@ -6,6 +6,7 @@ class Maze():
         if path == None:
             raise ValueError("Path cannnot be None")
 
+        # represents the whole maze (walls included) with a matrix
         self.maze_matrix = []
         self.maze_goals = []
 
@@ -18,6 +19,7 @@ class Maze():
                 if 'S' in line:
                     self.start = Node(i, line.index('S'), None, cost=0)
 
+                # Assigns the goal nodes
                 g_temp = [index for index, value in enumerate(line) if value == 'G']
 
                 for index in g_temp:

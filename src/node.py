@@ -8,13 +8,19 @@ class Node:
 
         self.a_star_heuristic = self.cost + self.heuristic
 
+    # calculates the real cordinates which is the cordinates
+    # of position in the graphical figure of maze (given in the project documentation)
     def get_real_coordinates(self):
         return int((self.x + 1) / 2), int((self.y + 1) / 2)
 
+    # checks wheather given object / variable
+    # is equal to this node or not
     def __eq__(self, equivalent):
+        # Special case if given object / variable is None
         if equivalent == None:
             return False
 
+        # if given x and y value is same than it return True else False
         is_x_equal = self.x == equivalent.x
         is_y_equal = self.y == equivalent.y
 

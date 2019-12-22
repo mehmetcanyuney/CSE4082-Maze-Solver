@@ -131,3 +131,7 @@ dmypy.json
 # Additional files
 *.pdf
 .pdf
+.zip
+.rar
+*.rar
+*.zip
