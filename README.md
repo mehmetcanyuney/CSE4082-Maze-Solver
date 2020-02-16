@@ -19,5 +19,5 @@ CSE4082 - Artificial Intelligence - Maze Solver
       - If land of trap the cost will be 7
 
 ## How to run the project
-  - Change directory to root of the project
+  - Change directory to `/src` folder
   - Run `python src/__init__.py` with Python3.x
